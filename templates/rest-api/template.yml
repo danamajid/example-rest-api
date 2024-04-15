@@ -1,0 +1,66 @@
+slug: rest-api
+version: 0.1.0
+baseUrl: "{restApiEndpoint}"
+setupSteps:
+  steps:
+    - name: Connector name
+      description: Give your connector a recognizable name
+      type: input
+      options:
+        scope: "#/properties/name"
+    - name: API endpoint
+      description: "The URL of the environment you wish to use.
+      type: input
+      options:
+        scope: "#/properties/arguments/properties/restApiEndpoint"
+    - name: Login and install
+      type: oauth_login
+      options:
+        securitySchemeKey: oauth
+  actions: []
+configurationSteps:
+  steps:
+    - name: Authentication
+      type: oauth_login
+      options:
+        buttonText: Reauthenticate
+        securitySchemeKey: oauth
+parameters:
+  - key: restApiEndpoint
+    type: string
+    required: false
+    readOnly: false
+    secret: false
+    defaultValue: "https://httpbin.org"
+environmentParameters:
+  - key: username
+    type: string
+    required: true
+    secret: false
+  - key: password
+    type: string
+    required: false
+    secret: true
+services:
+  basicAuth:
+    authentication:
+      strategy: httpBasicAuth
+      options:
+        username: "{environment.username}"
+        password: "{environment.password}"
+    parameters: null
+actions:
+  - slug: getCall
+    name: "Example GET request"
+    description: Example get request
+    type: http
+    verb: GET
+    path: /get?id={getIdExample}
+    parameters:
+      - key: getIdExample
+        type: string
+        required: true
+        readOnly: false
+        secret: false
+    security:
+      basicAuth: []
