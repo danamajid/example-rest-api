@@ -1,0 +1,10 @@
+name: Rest API
+description: This is just a public facing Rest API for testing purposes.
+overview: This is a test connector that is hosted publicly on https://github.com/danamajid/example-rest-api
+installation: ""
+links:
+  - title: Documentation
+    url: https://github.com/danamajid/example-rest-api
+iconUrl: https://images.unsplash.com/photo-1586084531072-e03cbf17afa6?q=80&w=2383&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+publisher:
+  name: Bird
