@@ -3,28 +3,52 @@ version: 0.1.0
 baseUrl: "{restApiEndpoint}"
 setupSteps:
   steps:
-    - name: Connector name
-      description: Give your connector a recognizable name
+    - name: Username
+      description: Please enter your username
       type: input
       options:
-        scope: "#/properties/name"
-    - name: API endpoint
-      description: "The URL of the environment you wish to use.
+        scope: "#/properties/securityArguments/properties/auth/properties/username"
+    - name: Password
+      description: Please enter your password
       type: input
       options:
-        scope: "#/properties/arguments/properties/restApiEndpoint"
-    - name: Login and install
-      type: oauth_login
-      options:
-        securitySchemeKey: oauth
-  actions: []
-configurationSteps:
-  steps:
-    - name: Authentication
-      type: oauth_login
-      options:
-        buttonText: Reauthenticate
-        securitySchemeKey: oauth
+        scope: "#/properties/securityArguments/properties/auth/properties/password"
+    - name: Install
+      type: install
+parameters: []
+securitySchemes:
+  auth:
+    type: httpAuthCustomHeader
+    headers:
+      Authorization: "Bearer {accessToken}"
+    refreshCredentials:
+      shouldRefresh: "response.StatusCode = 401"
+      action:
+        slug: authenticate
+        type: http
+        path: /authenticate
+        verb: POST
+        requestBody:
+          json: |
+            { "username": arguments.username, "password": arguments.password }
+      results: |
+        { "accessToken": response.ParsedBody.jwt }
+    parameters:
+      - key: username
+        type: string
+        required: true
+        secret: true
+        readOnly: false
+      - key: password
+        type: string
+        required: true
+        secret: true
+        readOnly: false
+      - key: accessToken
+        type: string
+        required: false
+        secret: true
+        readOnly: false
 parameters:
   - key: restApiEndpoint
     type: string
@@ -41,14 +65,6 @@ environmentParameters:
     type: string
     required: false
     secret: true
-services:
-  basicAuth:
-    authentication:
-      strategy: httpBasicAuth
-      options:
-        username: "{environment.username}"
-        password: "{environment.password}"
-    parameters: null
 actions:
   - slug: getCall
     name: "Example GET request"
@@ -63,4 +79,4 @@ actions:
         readOnly: false
         secret: false
     security:
-      basicAuth: []
+      auth: []
